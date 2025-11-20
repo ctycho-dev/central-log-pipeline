@@ -20,7 +20,6 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=true
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
@@ -28,10 +27,13 @@ services:
       - cluster.routing.allocation.disk.watermark.high=3gb
       - cluster.routing.allocation.disk.watermark.flood_stage=1gb
       - action.auto_create_index=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
     ulimits:
       memlock: { soft: -1, hard: -1 }
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
+      - /etc/letsencrypt/live/elk.nounsintern.wtf:/usr/share/elasticsearch/config/certs:ro
     ports:
       - "9200:9200"
     networks: [central-log-pipeline]
