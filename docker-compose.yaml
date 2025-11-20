@@ -29,11 +29,14 @@ services:
       - action.auto_create_index=true
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certs/fullchain.pem
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certs/privkey.pem
+      - xpack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/certs/chain.pem
     ulimits:
       memlock: { soft: -1, hard: -1 }
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
-      - /etc/letsencrypt/live/elk.nounsintern.wtf:/usr/share/elasticsearch/config/certs:ro
+      - /opt/elk-certs:/usr/share/elasticsearch/config/certs:ro
     ports:
       - "9200:9200"
     networks: [central-log-pipeline]
