@@ -38,10 +38,6 @@ services:
       - "9200:9200"
     networks: [central-log-pipeline]
     restart: unless-stopped
-    deploy:
-    resources:
-      limits:
-        memory: 512m
     <<: *hc_es
 
   kibana:
