@@ -1,0 +1,174 @@
+# ELK+Kafka Logging Pipeline
+
+A production-ready, single-node ELK stack with Kafka integration for centralized log processing and analysis.
+
+## 🏗️ Architecture Overview
+
+This setup provides a complete logging pipeline with:
+- **Elasticsearch 8.11.3**: Secure search and storage with 1GB heap
+- **Kibana 8.11.3**: Visualization and dashboard interface  
+- **Logstash 8.11.3**: Log processing and transformation
+- **Kafka + Zookeeper**: Reliable message queuing
+- **Security**: API key authentication and role-based access control
+
+## 📋 Prerequisites
+
+- Docker & Docker Compose
+- At least 4GB available RAM
+- 10GB+ free disk space
+- Basic understanding of ELK stack concepts
+
+## 🚀 Quick Start
+
+### 1. Clone and Setup
+```
+git clone <your-repo-url>
+cd central-log-pipeline
+chmod +x scripts/*.sh
+```
+
+### 2. Generate Environment Variables
+```
+./scripts/setup-env.sh
+```
+
+### 3. Create Logstash Configuration
+Create `logstash.conf`:
+```
+input {
+  kafka {
+    bootstrap_servers => "kafka:9092"
+    topics => ["app-logs"]
+    group_id => "logstash-consumer"
+    codec => json
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://elasticsearch:9200"]
+    api_key => "${LOGSTASH_API_KEY}"
+    index => "app-%{+yyyy.MM.dd}"
+  }
+}
+```
+
+### 4. Start Services
+```
+docker compose up -d
+```
+
+### 5. Create API Key and Configure Logstash
+```
+./scripts/create-api-key.sh
+# Follow the prompts to add API key to .env
+docker compose restart logstash
+```
+
+### 6. Setup Index Template
+```
+./scripts/setup-index-template.sh
+```
+
+## 🔍 Access Points
+
+- **Kibana**: http://localhost:5601 (elastic / your_password)
+- **Elasticsearch**: http://localhost:9200
+- **Kafka**: localhost:29092 (external)
+- **Logstash Stats**: http://localhost:9600
+
+## 📁 Project Structure
+
+```
+central-log-pipeline/
+├── docker-compose.yml      # Main stack definition
+├── .env                    # Environment variables  
+├── logstash.conf          # Logstash pipeline config
+├── scripts/
+│   ├── setup-env.sh       # Environment setup
+│   ├── create-api-key.sh  # API key generation
+│   └── setup-index-template.sh # Index template
+├── README.md
+└── LICENSE
+```
+
+## 🛡️ Security Features
+
+- **X-Pack Security**: Role-based access control
+- **API Key Authentication**: Secure service authentication  
+- **Least Privilege**: Minimal required permissions
+- **Encrypted Storage**: Kibana encryption keys
+- **Health Check Users**: Dedicated monitoring accounts
+
+## 🔧 Common Operations
+
+### Health Checks
+```
+docker compose ps
+curl -u elastic:password http://localhost:9200/_cluster/health
+```
+
+### Send Test Log
+```
+echo '{"message":"test","timestamp":"2025-09-24T15:30:00Z"}' | \
+  kafkacat -P -b localhost:29092 -t app-logs
+```
+
+### Search Logs  
+```
+curl -u elastic:password \
+  "http://localhost:9200/app-*/_search?q=*:*&size=10&pretty"
+```
+
+### View Service Logs
+```
+# All services
+docker compose logs -f
+
+# Specific service
+docker logs -f logstash
+```
+
+## 🚨 Troubleshooting
+
+**Logstash 401 Errors**: Ensure `LOGSTASH_API_KEY` is set and restart Logstash
+
+**Red Cluster Status**: Check disk space against watermarks (5GB/3GB/1GB)
+
+**Service Won't Start**: Check `docker compose logs service_name`
+
+**Kafka Connection Issues**: Verify topics exist and Kafka is accessible
+
+## 📊 Monitoring & Maintenance
+
+### Resource Monitoring
+- Monitor disk usage against watermarks (5GB/3GB/1GB)
+- Watch Elasticsearch heap usage (1GB limit)
+- Track Kafka topic lag and consumer groups
+
+### Maintenance Tasks
+- Rotate API keys quarterly
+- Review and clean old indices
+- Monitor log ingestion rates
+- Update Docker images regularly
+
+## 📈 Production Considerations
+
+### Scaling
+- Increase Logstash pipeline workers for higher throughput
+- Add more Kafka partitions for parallel processing
+- Consider multi-node Elasticsearch cluster for HA
+- Implement ILM policies for data lifecycle management
+
+### Security
+- Use TLS/SSL for production deployments
+- Implement network segmentation
+- Regular security updates and patches
+- Monitor access patterns and audit logs
+
+### Performance
+- Tune JVM heap sizes based on available memory
+- Optimize Logstash pipeline configurations
+- Use SSD storage for better I/O performance
+- Monitor and tune garbage collection
+

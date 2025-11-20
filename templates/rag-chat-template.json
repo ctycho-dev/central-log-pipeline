@@ -1,0 +1,41 @@
+{
+  "index_patterns": ["fastapi-logs-rag-chat-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "index.lifecycle.name": "fastapi-logs-policy"
+    },
+    "mappings": {
+      "dynamic": true,
+      "properties": {
+        "asctime": { 
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ssZ"
+        },
+        "levelname": { "type": "keyword" },
+        "name": { "type": "keyword" },
+        "message": { "type": "text" },
+        
+        "request_id": { "type": "keyword" },
+        "user_email": { "type": "keyword" },
+        
+        "module": { "type": "keyword" },
+        "funcName": { "type": "keyword" },
+        "lineno": { "type": "integer" },
+        
+        "method": { "type": "keyword" },
+        "path": { "type": "keyword" },
+        "status_code": { "type": "integer" },
+        "latency_s": { "type": "float" },
+        
+        "server_name": { "type": "keyword" },
+        "environment": { "type": "keyword" },
+        
+        "error": { "type": "text" },
+        "traceback": { "type": "text" }
+      }
+    }
+  },
+  "priority": 300
+}

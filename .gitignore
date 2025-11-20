@@ -1,0 +1,102 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.dev
+secrets.yml
+config/secrets.yml
+
+# Elasticsearch data directories
+data/
+elasticsearch/data/
+es-data/
+esdata/
+*/elasticsearch/data/
+
+# Elasticsearch logs
+logs/
+elasticsearch/logs/
+*.log
+*.log.*
+
+# Kibana data and logs
+kibana/data/
+kibana/logs/
+
+# Certificates and security files
+certs/
+certificates/
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# Let's Encrypt certificate files (if managed by certbot)
+letsencrypt/
+
+# Backup files
+backups/
+snapshots/
+*.backup
+*.bak
+
+# Docker volumes (if using named volumes)
+docker-volumes/
+
+# Docker Compose overrides
+docker-compose.override.yml
+
+# Elasticsearch and Kibana internal files
+.DS_Store
+._.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if using any JS plugins)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Python cache (if using Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database position files
+*.db
+*.db-shm
+*.db-wal
+
+# Elasticsearch snapshots
+elasticsearch/snapshots/
+
+# Monitoring and metrics data
+monitoring/
+metrics/
+
+# Build artifacts
+dist/
+build/
+target/
