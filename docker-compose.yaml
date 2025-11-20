@@ -22,7 +22,7 @@ services:
       - discovery.type=single-node
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ES_JAVA_OPTS=-Xms384m -Xmx384m
       - cluster.routing.allocation.disk.watermark.low=5gb
       - cluster.routing.allocation.disk.watermark.high=3gb
       - cluster.routing.allocation.disk.watermark.flood_stage=1gb
@@ -38,6 +38,10 @@ services:
       - "9200:9200"
     networks: [central-log-pipeline]
     restart: unless-stopped
+    deploy:
+    resources:
+      limits:
+        memory: 512m
     <<: *hc_es
 
   kibana:
